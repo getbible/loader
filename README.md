@@ -48,27 +48,21 @@ In the example above, the tooltip for this list item will show text from both th
 
 ## Scripture Reference Formatting
 
-For the scripture references to be recognized correctly by the GetBible Tooltips, they must adhere to the specific book names used in the translation book list. Here are the updated guidelines for formatting your references considering the provided information:
+Nearly **all** abbreviations on almost **all** languages should work.
 
-- **Book Names**: Use the exact book names as found in the translation book list. Each translation might have its own list, and to ensure accuracy, refer to the respective list for the correct book names.
-  
-  - You can view each translation's book list using the API endpoints provided:
-    - To list all available translations: `https://api.getbible.net/v2/translations.json`
-    - To list all books for a specific translation: `https://api.getbible.net/v2/[translation_abbreviation]/books.json`
+[Here you can view all the files of the various translations we use to parse each reference in their respective languages](https://git.vdm.dev/getBible/librarian/src/branch/master/src/getbible/data).
 
-  - As a default, all book names from the [King James Version (KJV)](https://api.getbible.net/v2/kjv/books.json) are valid for all translations.
+Should you see room for improvement to these, please open an issue at our [support desk](https://git.vdm.dev/getBible/support/issues), we welcome any help to make this work even better.
 
-- **No Abbreviations**: Currently, the use of book name abbreviations is not supported. Always use the full book name.
+### Some Guidelines
 
-- **Chapter and Verse**: Follow the book name with the chapter number, a colon, and the verse number(s) (e.g., "John 3:16").
-
-- **Multiple Verses**: Separate multiple verses with commas (e.g., "John 3:16,17").
-
+- **Chapter and Verse**: Follow the book name with the chapter number, a colon, and the verse number(s) (e.g., "Jn3:16").
+- **Multiple Verses**: Separate multiple verses with commas (e.g., "Jn 3:16,17").
 - **Verse Ranges**: Indicate a range of verses using a hyphen (e.g., "John 3:16-19").
-
-- **Multiple References**: Separate different scripture references with semicolons (e.g., "John 3:16-17; 1 John 3:16-19").
-
-Ensure that your references are formatted according to these guidelines for the GetBible Tooltips to function as intended. This attention to detail will provide users with the correct scripture texts and improve their overall experience on your website.
+- **Multiple References**: Separate different scripture references with semicolons (e.g., "Joh 3:16-17; 1 Jo3:16-19").
+- **One Chapter Per/Reference**: Each reference should only target one chapter.
+- **Missing Chapter**: All references that does not have a chapter will **default to chapter 1** (e.g., "Jhn :16-19").
+- **Missing Verses**: All references that does not have verses will **default to verse 1** (e.g., "Jn3").
 
 ## Copyright and License
 
