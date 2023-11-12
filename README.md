@@ -12,7 +12,7 @@ GetBible Tooltips is an intuitive and lightweight JavaScript solution for embedd
 
    ```html
    <!-- Include the GetBible tooltips script from jsDelivr CDN -->
-   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@2.0.0/dist/js/getBible.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@2.0.1/dist/js/getBible.min.js"></script>
    ```
 
 2. **Markup Your Scripture References:**

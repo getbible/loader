@@ -41,15 +41,50 @@ class GetBibleTooltip {
     });
   }
 
-  // Fetch scripture from the API endpoint using the reference
+  // Function to generate a unique key for each scripture
+  generateStorageKey(reference, translation) {
+    return `getBible-${translation}-${reference}`;
+  }
+
+  // Function to check local storage
+  async checkLocalStorage(reference, translation) {
+    const key = generateStorageKey(reference, translation);
+    const storedItem = localStorage.getItem(key);
+    if (storedItem) {
+      const { data, timestamp } = JSON.parse(storedItem);
+      const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
+      if (timestamp > oneMonthAgo) {
+        return data;
+      }
+    }
+    return null;
+  }
+
+  // Function to store data in local storage
+  storeInLocalStorage(reference, translation, data) {
+    const key = generateStorageKey(reference, translation);
+    const item = {
+      data,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  }
+
+  // Modified fetchScripture function
   async fetchScripture(reference, translation) {
     try {
+      // Check local storage first
+      const localStorageData = await checkLocalStorage(reference, translation);
+      if (localStorageData !== null) {
+        return localStorageData;
+      }
+      // Fetch from API if not in local storage
       const response = await fetch(`${this.apiEndpoint}${encodeURIComponent(translation)}/${encodeURIComponent(reference)}`);
       if (response.ok) {
         const data = await response.json();
+        storeInLocalStorage(reference, translation, data); // Store in local storage
         return data;
       } else {
-        // Attempt to read the JSON response to get the error message
         const errorData = await response.json();
         const errorMessage = errorData.error || 'Failed to fetch scripture';
         throw new Error(errorMessage);
