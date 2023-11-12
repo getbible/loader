@@ -6,6 +6,7 @@ class GetBibleTooltip {
     this.findAndFetchScriptureReferences();
   }
 
+  // Find elements with the 'getBible' class and fetch their references individually
   findAndFetchScriptureReferences() {
     const elements = document.querySelectorAll('.getBible');
     elements.forEach(element => {
@@ -40,10 +41,12 @@ class GetBibleTooltip {
     });
   }
 
+  // Function to generate a unique key for each scripture
   generateStorageKey(reference, translation) {
     return `getBible-${translation}-${reference}`;
   }
 
+  // Function to check local storage
   async checkLocalStorage(reference, translation) {
     const key = this.generateStorageKey(reference, translation); // Corrected this line
     const storedItem = localStorage.getItem(key);
@@ -57,6 +60,7 @@ class GetBibleTooltip {
     return null;
   }
 
+  // Function to store data in local storage
   storeInLocalStorage(reference, translation, data) {
     const key = this.generateStorageKey(reference, translation); // Corrected this line
     const item = {
@@ -66,12 +70,14 @@ class GetBibleTooltip {
     localStorage.setItem(key, JSON.stringify(item));
   }
 
+  // Dynamic fetchScripture function
   async fetchScripture(reference, translation) {
     try {
       const localStorageData = await this.checkLocalStorage(reference, translation); // Corrected this line
       if (localStorageData !== null) {
         return localStorageData;
       }
+      // Fetch from API if not in local storage
       const response = await fetch(`${this.apiEndpoint}${encodeURIComponent(translation)}/${encodeURIComponent(reference)}`);
       if (response.ok) {
         const data = await response.json();
@@ -83,9 +89,12 @@ class GetBibleTooltip {
         throw new Error(errorMessage);
       }
     } catch (error) {
+      // If the response is not JSON or another error occurs, throw the default error message
       if (error instanceof SyntaxError) {
+        // This indicates a problem with JSON parsing, meaning the response was not JSON
         throw new Error('Failed to fetch scripture');
       } else {
+        // Re-throw the error that we constructed from the JSON response
         throw error;
       }
     }
