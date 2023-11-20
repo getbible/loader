@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uikit Tooltips Test | GetBible</title>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.10/dist/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.10/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.10/dist/js/uikit-icons.min.js"></script>
+
+    <!-- getBible JS -->
+    <script src="../dist/js/getBible.min.js"></script>
+
+</head>
+<body>
+
+<h1>Scripture References</h1>
+
+<p>Hover over the references to see the scripture text:</p>
+
+<ul>
+    <li class="getBible" data-translation="kjv;aov" data-show-translation="1" data-show-language="1"
+        data-format="tooltip">John 3:16,19
+    </li>
+    <li class="getBible" data-show-abbreviation="1" data-format="modal">John 3:16-17; 1 John 3:16-19,22</li>
+    <li class="getBible" data-translation="kjv;codex" data-show-language="1" data-format="modal">Genesis 1:1</li>
+    <li class="getBible" data-translation="kjv;codex" data-show-language="1" data-format="tooltip">Psalms 23:1-4</li>
+    <li class="getBible">Romans 8:28,31-39</li>
+</ul>
+
+</body>
+</html>

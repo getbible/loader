@@ -1,8 +1,8 @@
-# GetBible Tooltips Integration Guide
+# GetBible Loader Integration Guide
 
 ## Overview
 
-GetBible Tooltips is an intuitive and lightweight JavaScript solution for embedding Bible scripture tooltips into your website. By simply adding the `getBible` class to any element on your webpage, you can enable users to see the full scripture text in a tooltip when they hover over a reference.
+GetBible loader is an intuitive and lightweight JavaScript solution for embedding Bible scripture into your website. By simply adding the `getBible` class to any element that has a scripture reference on your webpage, you can enable users to see the full scripture text as inline text, a tooltip or a modal.
 
 ## How to Add GetBible Tooltips to Your Website
 
@@ -12,7 +12,7 @@ GetBible Tooltips is an intuitive and lightweight JavaScript solution for embedd
 
    ```html
    <!-- Include the GetBible tooltips script from jsDelivr CDN -->
-   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@2.0.2/dist/js/getBible.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@3.0.0/dist/js/getBible.min.js"></script>
    ```
 
 2. **Markup Your Scripture References:**
@@ -27,12 +27,13 @@ GetBible Tooltips is an intuitive and lightweight JavaScript solution for embedd
    </ul>
    ```
 
-   For a detailed example, check out the [basic usage example](https://git.vdm.dev/getBible/loader/src/branch/master/example/basic.html) in the `getbible/loader` repository.
+   For a detailed examples, check out the [tests](https://git.vdm.dev/getBible/loader/src/branch/master/tests/) in the `getbible/loader` repository.
 
 ## Utilizing Data Attributes
 
-Data attributes allow you to customize the behavior and display of the scripture tooltips.
+Data attributes allow you to customize the behavior and display of the scripture.
 
+- `data-format`: Specify the format you would like to load (e.g., `modal`). There are three options `modal`, `inline`, and `tooltip` you can just select one at a time.
 - `data-translation`: Specify the Bible translations to use, separated by semicolons (e.g., `kjv;aov`). The tooltip will fetch the scripture from each translation listed.
 - `data-show-translation`: Set to `1` to display the translation name in the tooltip.
 - `data-show-abbreviation`: Set to `1` to display the abbreviation of the translation in the tooltip.

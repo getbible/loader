@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Tooltips Test | GetBible</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- getBible JS -->
+    <script src="../dist/js/getBible.js"></script>
+
+</head>
+<body>
+
+<header class="bg-blue-500 text-white text-lg p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="font-bold">Scripture References</h1>
+    </div>
+</header>
+
+<p>Hover over the references to see the scripture text:</p>
+
+<ul>
+    <li class="getBible" data-translation="kjv;aov" data-show-translation="1" data-show-language="1"
+        data-format="tooltip">John 3:16,19
+    </li>
+    <li class="getBible" data-show-abbreviation="1" data-format="modal">John 3:16-17; 1 John 3:16-19,22</li>
+    <li class="getBible" data-translation="kjv;codex" data-show-language="1" data-format="modal">Genesis 1:1</li>
+    <li class="getBible" data-translation="kjv;codex" data-show-language="1" data-format="tooltip">Psalms 23:1-4</li>
+    <li class="getBible">Romans 8:28,31-39</li>
+</ul>
+
+</body>
+</html>
