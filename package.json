@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://git.vdm.dev/getBible/support"
   },
-  "homepage": "https://getbible.net/biblekit",
+  "homepage": "https://getbible.net/loader",
   "dependencies": {
   },
   "devDependencies": {
