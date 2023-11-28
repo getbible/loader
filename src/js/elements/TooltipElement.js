@@ -1,8 +1,9 @@
-import { BaseTooltip } from './tooltip/BaseTooltip.js';
-import { BootstrapTooltip } from './tooltip/BootstrapTooltip.js';
-import { UikitTooltip } from './tooltip/UikitTooltip.js';
-import { FoundationTooltip } from './tooltip/FoundationTooltip.js';
-import { TailwindTooltip } from './tooltip/TailwindTooltip.js';
+import {Action} from '../core/Action.js';
+import {BaseTooltip} from './tooltip/BaseTooltip.js';
+import {BootstrapTooltip} from './tooltip/BootstrapTooltip.js';
+import {UikitTooltip} from './tooltip/UikitTooltip.js';
+import {FoundationTooltip} from './tooltip/FoundationTooltip.js';
+import {TailwindTooltip} from './tooltip/TailwindTooltip.js';
 
 /**
  * TooltipElement class responsible for creating and managing tooltip elements.
@@ -13,10 +14,10 @@ export class TooltipElement {
    * Constructs an instance of TooltipElement with the appropriate tooltip type
    * based on the detected UI framework.
    *
-   * @param {HTMLElement} triggerElement - The element that triggers the tooltip.
+   * @param {Action} action - The action element that triggers the tooltip.
    */
-  constructor(triggerElement) {
-    this.tooltip = TooltipElement.framework(triggerElement);
+  constructor(action) {
+    this.tooltip = TooltipElement.framework(action);
   }
 
   /**
@@ -31,11 +32,11 @@ export class TooltipElement {
   /**
    * Determines the appropriate tooltip implementation based on the available UI framework.
    *
-   * @param {HTMLElement} triggerElement - The element triggering the tooltip.
+   * @param {Action} action - The action element triggering the tooltip.
    * @returns {BaseTooltip|BootstrapTooltip|UikitTooltip|FoundationTooltip|TailwindTooltip} The tooltip instance.
    * @param debug
    */
-  static framework(triggerElement) {
+  static framework(action) {
     const frameworks = {
       'UIkit': UikitTooltip,
       'bootstrap': BootstrapTooltip,
@@ -48,13 +49,13 @@ export class TooltipElement {
         if (process.env.DEBUG) {
           console.log(`${key} tooltip selected`);
         }
-        return new TooltipType(triggerElement);
+        return new TooltipType(action);
       }
     }
 
     if (process.env.DEBUG) {
       console.log(`base tooltip selected`);
     }
-    return new BaseTooltip(triggerElement);
+    return new BaseTooltip(action);
   }
 }

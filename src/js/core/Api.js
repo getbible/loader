@@ -1,4 +1,4 @@
-import { Memory } from './Memory.js';
+import {Memory} from './Memory.js';
 
 /**
  * Class for handling API calls to fetch scripture data.

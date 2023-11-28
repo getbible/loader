@@ -1,16 +1,35 @@
+import {Scripture} from '../core/Scripture.js';
+import {Action} from '../core/Action.js';
+
 export class BaseFormat {
+  #action;
+
+  /**
+   * Creates a new BaseTooltip instance.
+   *
+   * @param {Action} action - The action elements that triggers the tooltip.
+   */
+  constructor(action) {
+    this.#action = action;
+  }
+
+  /**
+   * Get action.
+   *
+   * @returns {Action} The current actions.
+   */
+  action() {
+    return this.#action;
+  }
+
   /**
    * Get formats the verses.
    *
-   * @param {Object} data - The data containing verses and their details.
-   * @param {boolean} showBook - Whether to show book names.
-   * @param {boolean} showTrans - Whether to show translations.
-   * @param {boolean} showAbbr - Whether to show abbreviations.
-   * @param {boolean} showLang - Whether to show languages.
+   * @param {Scripture} scripture - The data containing verses and their details.
    * @returns {string} The formatted verses.
    * @abstract
    */
-  get(data, showBook, showTrans, showAbbr, showLang) {
+  get(scripture) {
     throw new Error("The 'get' method must be implemented in BaseFormat subclass.");
   }
 }

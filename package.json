@@ -2,7 +2,7 @@
   "name": "getbible.loader",
   "title": "getBible",
   "description": "GetBible is an intuitive and lightweight JavaScript solution for embedding Bible scripture into your website.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "dist/js/getBible.min.js",
   "scripts": {
     "build": "rollup -c"
@@ -19,14 +19,14 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^21.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "rollup": "^2.60.0",
-    "rollup-plugin-terser": "^7.0.0",
-    "rollup-plugin-license": "^2.3.0",
-    "@rollup/plugin-replace": "^5.0.5"
+    "@babel/core": "latest",
+    "@babel/preset-env": "latest",
+    "@rollup/plugin-babel": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "rollup": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-license": "latest",
+    "@rollup/plugin-replace": "latest"
   }
 }

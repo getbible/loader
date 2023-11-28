@@ -1,8 +1,8 @@
-import { BaseModal } from './BaseModal.js';
+import {BaseModal} from './BaseModal.js';
 
 export class FoundationModal extends BaseModal {
-  constructor(triggerElement) {
-    super(triggerElement);
+  constructor(action) {
+    super(action);
     this.modalElement = null;
   }
 
@@ -20,8 +20,8 @@ export class FoundationModal extends BaseModal {
 
   create(content) {
     const modalHtml = `
-      <div class="reveal" id="${this.modalId}" data-reveal>
-        <div id="${this.modalId}-content">
+      <div class="reveal" id="${this.getModalId()}" data-reveal>
+        <div id="${this.getModalId()}-content">
           ${content}
         </div>
         <button class="close-button" data-close aria-label="Close modal" type="button">
@@ -29,10 +29,10 @@ export class FoundationModal extends BaseModal {
         </button>
       </div>`;
     this.insertIntoDOM(modalHtml);
-    this.modalElement = new Foundation.Reveal(document.getElementById(this.modalId));
+    this.modalElement = new Foundation.Reveal(document.getElementById(this.getModalId()));
   }
 
   initializeTrigger() {
-    this.triggerElement.setAttribute('data-open', this.modalId);
+    this.getElement().setAttribute('data-open', this.getModalId());
   }
 }

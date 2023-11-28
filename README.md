@@ -2,7 +2,7 @@
 
 ## Overview
 
-GetBible loader is an intuitive and lightweight JavaScript solution for embedding Bible scripture into your website. By simply adding the `getBible` class to any element that has a scripture reference on your webpage, you can enable users to see the full scripture text as inline text, a tooltip or a modal.
+GetBible loader is an intuitive and lightweight JavaScript solution for embedding Reference scripture into your website. By simply adding the `getBible` class to any element that has a scripture reference on your webpage, you can enable users to see the full scripture text as inline text, a tooltip or a modal.
 
 ## How to Add GetBible Tooltips to Your Website
 
@@ -12,7 +12,7 @@ GetBible loader is an intuitive and lightweight JavaScript solution for embeddin
 
    ```html
    <!-- Include the GetBible tooltips script from jsDelivr CDN -->
-   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@3.0.0/dist/js/getBible.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@3.0.1/dist/js/getBible.min.js"></script>
    ```
 
 2. **Markup Your Scripture References:**
@@ -34,7 +34,7 @@ GetBible loader is an intuitive and lightweight JavaScript solution for embeddin
 Data attributes allow you to customize the behavior and display of the scripture.
 
 - `data-format`: Specify the format you would like to load (e.g., `modal`). There are three options `modal`, `inline`, and `tooltip` you can just select one at a time.
-- `data-translation`: Specify the Bible translations to use, separated by semicolons (e.g., `kjv;aov`). The tooltip will fetch the scripture from each translation listed.
+- `data-translation`: Specify the Reference translations to use, separated by semicolons (e.g., `kjv;aov`). The tooltip will fetch the scripture from each translation listed.
 - `data-show-translation`: Set to `1` to display the translation name in the tooltip.
 - `data-show-abbreviation`: Set to `1` to display the abbreviation of the translation in the tooltip.
 - `data-show-language`: Set to `1` to display the language of the translation in the tooltip.
@@ -57,12 +57,12 @@ Should you see room for improvement to these, please open an issue at our [suppo
 
 ### Some Guidelines
 
-- **Chapter and Verse**: Follow the book name with the chapter number, a colon, and the verse number(s) (e.g., "Jn3:16").
+- **Reference and Verse**: Follow the book name with the chapter number, a colon, and the verse number(s) (e.g., "Jn3:16").
 - **Multiple Verses**: Separate multiple verses with commas (e.g., "Jn 3:16,17").
 - **Verse Ranges**: Indicate a range of verses using a hyphen (e.g., "John 3:16-19").
 - **Multiple References**: Separate different scripture references with semicolons (e.g., "Joh 3:16-17; 1 Jo3:16-19").
-- **One Chapter Per/Reference**: Each reference should only target one chapter.
-- **Missing Chapter**: All references that does not have a chapter will **default to chapter 1** (e.g., "Jhn :16-19").
+- **One Reference Per/Reference**: Each reference should only target one chapter.
+- **Missing Reference**: All references that does not have a chapter will **default to chapter 1** (e.g., "Jhn :16-19").
 - **Missing Verses**: All references that does not have verses will **default to verse 1** (e.g., "Jn3").
 
 ## Copyright and License

@@ -1,24 +1,24 @@
-import { BaseTooltip } from './BaseTooltip.js';
+import {BaseTooltip} from './BaseTooltip.js';
 
 export class FoundationTooltip extends BaseTooltip {
-  constructor(triggerElement) {
-    super(triggerElement);
+  constructor(action) {
+    super(action);
   }
 
   load(content) {
     try {
-      this.triggerElement.setAttribute('data-tooltip', '');
+      this.getElement().setAttribute('data-tooltip', '');
       super.load(content);
-      this.triggerElement.classList.add('has-tip');
+      this.getElement().classList.add('has-tip');
 
-      new Foundation.Tooltip(this.triggerElement, {
+      new Foundation.Tooltip(this.getElement(), {
         // Default options
         disableHover: false, // Allows tooltip to be hoverable
         fadeOutDuration: 150, // Duration of fade out animation in milliseconds
         fadeInDuration: 150, // Duration of fade in animation in milliseconds
         showOn: 'all', // Can be 'all', 'large', 'medium', 'small'
         templateClasses: '', // Custom class(es) to be added to the tooltip template
-        tipText: () => this.triggerElement.getAttribute('title'), // Function to define tooltip text
+        tipText: () => this.getElement().getAttribute('title'), // Function to define tooltip text
         triggerClass: 'has-tip', // Class to be added on the trigger elements
         touchCloseText: 'tap to close', // Text for close button on touch devices
         positionClass: 'top', // Position of tooltip, can be 'top', 'bottom', 'left', 'right', etc.

@@ -1,8 +1,8 @@
-import { BaseTooltip } from './BaseTooltip.js';
+import {BaseTooltip} from './BaseTooltip.js';
 
 export class BootstrapTooltip extends BaseTooltip {
-  constructor(triggerElement) {
-    super(triggerElement);
+  constructor(action) {
+    super(action);
   }
 
   load(content) {

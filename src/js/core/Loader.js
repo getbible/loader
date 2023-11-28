@@ -1,72 +1,110 @@
-import { Api } from './Api.js';
-import { Format } from '../formats/Format.js';
-import { Element } from '../elements/Element.js';
+import {Api} from './Api.js';
+import {Scripture} from './Scripture.js';
+import {Action} from './Action.js';
+import {Format} from '../formats/Format.js';
+import {Element} from '../elements/Element.js';
 
 /**
- * Loader class responsible for handling the loading of Bible references.
+ * Loader class responsible for handling the loading of Reference references.
+ * It initializes necessary components and loads data into a specified HTML element.
  */
 export class Loader {
-    /**
-     * Constructs a Loader instance.
-     */
-    constructor() {
-        this.api = new Api();
+  #api;
+  #action;
+  #element;
+  #format;
+  #pattern = /^(?=.*\p{Letter})(?=.*\d)(?=.*:).{1,30}$/u;
+
+  /**
+   * Constructs a Loader instance.
+   * Allows for dependency injection of the Api class for easier testing and flexibility.
+   * @param {Api} api - Instance of Api class for making API calls.
+   */
+  constructor(api = new Api()) {
+    this.#api = api;
+  }
+
+  /**
+   * Load the Reference references into the specified HTML element.
+   * This method extracts references from the element, validates them, and loads each valid reference.
+   * @param {HTMLElement} element - The element to load Reference references into.
+   */
+  async load(element) {
+    const references = element.innerHTML.split(';').map(ref => ref.trim());
+
+    if (references.length === 0) {
+      console.error("No references found in the getBible tagged class.");
+      return;
     }
 
-    /**
-     * Load the Bible references into the specified HTML element.
-     *
-     * @param {HTMLElement} element - The element to load Bible references into.
-     */
-    load(element) {
-        const references = element.innerHTML.split(';');
-        if (references) {
-            this.#init(element);
-            const translations = (element.dataset.translation || 'kjv').toLowerCase().split(';');
-            this.showBookName = element.dataset.showBookName ? parseInt(element.dataset.showBookName, 10) : 1;
-            this.showTranslation = element.dataset.showTranslation ? parseInt(element.dataset.showTranslation, 10) : 0;
-            this.showAbbreviation = element.dataset.showAbbreviation ? parseInt(element.dataset.showAbbreviation, 10) : 0;
-            this.showLanguage = element.dataset.showLanguage ? parseInt(element.dataset.showLanguage, 10) : 0;
+    const validReferences = this.#validateReferences(references);
+    if (validReferences.length === 0) {
+      console.error("No valid references found in the getBible tagged class.");
+      return;
+    }
 
-            references.forEach(reference => {
-                translations.forEach(translation => {
-                    this.api.get(reference.trim(), translation.trim()).then(scripture => {
-                        if (scripture) {
-                            this.#load(scripture);
-                        }
-                    }).catch(error => console.error(error));
-                });
-            });
+    this.#init(element);
+    await this.#processReferences(validReferences);
+  }
+
+  /**
+   * Validates a list of references against the specified pattern.
+   * Invalid references are logged and excluded from the return value.
+   * @param {string[]} references - The array of references to validate.
+   * @returns {string[]} A filtered array of valid references.
+   * @private
+   */
+  #validateReferences(references) {
+    return references.filter(reference => {
+      if (!this.#pattern.test(reference)) {
+        console.error(`Invalid getBible reference: ${reference}`);
+        return false;
+      }
+      return true;
+    });
+  }
+
+  /**
+   * Processes each valid reference by fetching translations and loading the scripture.
+   * This method handles the asynchronous nature of API calls.
+   * @param {string[]} validReferences - Array of valid references to be processed.
+   * @private
+   */
+  async #processReferences(validReferences) {
+    for (const reference of validReferences) {
+      for (const translation of this.#action.getTranslations()) {
+        try {
+          const scripture = await this.#api.get(reference, translation);
+          if (scripture) {
+            this.#load(scripture);
+          }
+        } catch (error) {
+          console.error(`Error loading reference ${reference}:`, error);
         }
+      }
     }
+  }
 
-    /**
-     * Initialize the target format and element for loading the Bible.
-     *
-     * @param {HTMLElement} element - The element to be initialized.
-     * @private
-     */
-    #init(element) {
-        const format = (element.dataset.format || 'inline').toLowerCase();
-        this.element = new Element(element, format);
-        this.format = new Format(format);
-    }
+  /**
+   * Initializes components necessary for loading references.
+   * This includes action, element, and format components.
+   * @param {HTMLElement} element - The element to be initialized for loading.
+   * @private
+   */
+  #init(element) {
+    this.#action = new Action(element);
+    this.#element = new Element(this.#action);
+    this.#format = new Format(this.#action);
+  }
 
-    /**
-     * Load the Bible data in the target format into the initialized element.
-     *
-     * @param {Object} data - The data containing verses and their details.
-     * @private
-     */
-    #load(data) {
-        this.element.load(
-            this.format.get(
-                data,
-                this.showBookName,
-                this.showTranslation,
-                this.showAbbreviation,
-                this.showLanguage
-            )
-        );
-    }
+  /**
+   * Loads the scripture data into the initialized element in the specified format.
+   * This method is responsible for the final rendering of scripture data.
+   * @param {Object} scripture - The data containing verses and their details.
+   * @private
+   */
+  #load(scripture) {
+    this.#element.load(this.#format.get(new Scripture(scripture)));
+  }
 }
+

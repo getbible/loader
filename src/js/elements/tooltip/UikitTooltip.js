@@ -1,4 +1,4 @@
-import { BaseTooltip } from './BaseTooltip.js';
+import {BaseTooltip} from './BaseTooltip.js';
 
 export class UikitTooltip extends BaseTooltip {
   constructor(triggerElement) {

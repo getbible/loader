@@ -1,8 +1,9 @@
-import { BaseModal } from './modals/BaseModal.js';
-import { UikitModal } from './modals/UikitModal.js';
-import { BootstrapModal } from './modals/BootstrapModal.js';
-import { FoundationModal } from './modals/FoundationModal.js';
-import { TailwindModal } from './modals/TailwindModal.js';
+import {Action} from '../core/Action.js';
+import {BaseModal} from './modals/BaseModal.js';
+import {UikitModal} from './modals/UikitModal.js';
+import {BootstrapModal} from './modals/BootstrapModal.js';
+import {FoundationModal} from './modals/FoundationModal.js';
+import {TailwindModal} from './modals/TailwindModal.js';
 
 /**
  * ModalElement class responsible for creating and managing modal elements.
@@ -13,10 +14,10 @@ export class ModalElement {
    * Constructs an instance of ModalElement with the appropriate modal type
    * based on the detected UI framework.
    *
-   * @param {HTMLElement} triggerElement - The element that triggers the modal.
+   * @param {Action} action - The action element that triggers the modal.
    */
-  constructor(triggerElement) {
-    this.modal = ModalElement.framework(triggerElement);
+  constructor(action) {
+    this.modal = ModalElement.framework(action);
   }
 
   /**
@@ -31,10 +32,10 @@ export class ModalElement {
   /**
    * Determines the appropriate modal implementation based on the available UI framework.
    *
-   * @param {HTMLElement} triggerElement - The element triggering the modal.
+   * @param {Action} action - The action element triggering the modal.
    * @returns {BaseModal|BootstrapModal|UikitModal|FoundationModal|TailwindModal} The modal instance.
    */
-  static framework(triggerElement) {
+  static framework(action) {
     const frameworks = {
       'UIkit': UikitModal,
       'bootstrap': BootstrapModal,
@@ -47,13 +48,13 @@ export class ModalElement {
         if (process.env.DEBUG) {
           console.log(`${key} modal selected`);
         }
-        return new ModalType(triggerElement);
+        return new ModalType(action);
       }
     }
 
     if (process.env.DEBUG) {
       console.log(`base modal selected`);
     }
-    return new BaseModal(triggerElement);
+    return new BaseModal(action);
   }
 }

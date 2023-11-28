@@ -1,12 +1,16 @@
+import {Action} from '../../core/Action.js';
+
 export class BaseTooltip {
+  #action;
+
   /**
    * Creates a new BaseTooltip instance.
    *
-   * @param {HTMLElement} triggerElement - The elements that triggers the tooltip.
+   * @param {Action} action - The action elements that triggers the tooltip.
    */
-  constructor(triggerElement) {
-    this.triggerElement = triggerElement;
-    this.triggerElement.style.cursor = 'help';
+  constructor(action) {
+    this.#action = action;
+    this.getElement().style.cursor = 'help';
   }
 
   /**
@@ -17,8 +21,17 @@ export class BaseTooltip {
    * @throws {Error} Throws an error if the trigger elements is not valid.
    */
   load(content) {
-    const existingTitle = this.triggerElement.getAttribute('title');
+    const existingTitle = this.getElement().getAttribute('title');
     const newTitle = existingTitle ? existingTitle + "\n" + content : content;
-    this.triggerElement.setAttribute('title', newTitle);
+    this.getElement().setAttribute('title', newTitle);
+  }
+
+  /**
+   * Get the action element
+   *
+   * @returns {HTMLElement} - The DOM element being worked with.
+   */
+  getElement() {
+    return this.#action.getElement();
   }
 }
