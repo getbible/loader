@@ -1,5 +1,5 @@
 /**
- * getBible Loader v3.0.1
+ * getBible Loader v3.0.2
  * https://getbible.net
  * (c) 2014 - 2023 Llewellyn van der Merwe
  * MIT License
@@ -1246,7 +1246,6 @@
     #action;
     #element;
     #format;
-    #pattern = /^(?=.*\p{Letter})(?=.*\d)(?=.*:).{1,30}$/u;
 
     /**
      * Constructs a Loader instance.
@@ -1281,7 +1280,7 @@
     }
 
     /**
-     * Validates a list of references against the specified pattern.
+     * Validates a list of references to ensure each is no longer than 30 characters and contains at least one number.
      * Invalid references are logged and excluded from the return value.
      * @param {string[]} references - The array of references to validate.
      * @returns {string[]} A filtered array of valid references.
@@ -1289,7 +1288,10 @@
      */
     #validateReferences(references) {
       return references.filter(reference => {
-        if (!this.#pattern.test(reference)) {
+        // Check if the reference is not longer than 30 characters and contains at least one number
+        const isValid = reference.length <= 30 && /\d/.test(reference);
+        // Log invalid references
+        if (!isValid) {
           console.error(`Invalid getBible reference: ${reference}`);
           return false;
         }
