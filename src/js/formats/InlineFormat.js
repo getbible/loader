@@ -16,23 +16,29 @@ export class InlineFormat extends BaseFormat {
     let display = [];
     scripture.forEachReference((reference) => {
       let footer = [];
-      display.push(`<div dir="${reference.getTextDirection().toUpperCase()}" class="getbible-reference-inline">`);
-      if (this.action().showBookName()) {
-        footer.push(`<span class="getbible-book-name">${reference.getBookName()}</span>`);
+      display.push(`<div dir="${reference.textDirection.toUpperCase()}" class="getbible-reference-inline">`);
+      if (this.action.bookName) {
+        footer.push(`<span class="getbible-book-name">${reference.bookName}</span>`);
       }
-      if (this.action().showReference()) {
-        footer.push(`<span class="getbible-reference">${reference.getReference()}</span>`);
+      if (this.action.reference) {
+        footer.push(`<span class="getbible-reference">${reference.reference}</span>`);
       }
-      if (this.action().showTranslation()) {
-        footer.push(`<span class="getbible-translation">${reference.getTranslation()}</span>`);
+      if (this.action.localReference) {
+        footer.push(`<span class="getbible-reference">${reference.localReference}</span>`);
       }
-      if (this.action().showAbbreviation()) {
-        footer.push(`<span class="getbible-abbreviation">${reference.getAbbreviation()}</span>`);
+      if (this.action.translation) {
+        footer.push(`<span class="getbible-translation">${reference.translation}</span>`);
       }
-      if (this.action().showLanguage()) {
-        footer.push(`<span class="getbible-language">${reference.getLanguage()}</span>`);
+      if (this.action.abbreviation) {
+        footer.push(`<span class="getbible-abbreviation">${reference.abbreviation}</span>`);
       }
-      const verses = reference.getVerses()
+      if (this.action.language) {
+        footer.push(`<span class="getbible-language">${reference.language}</span>`);
+      }
+      if (this.action.languageCode) {
+        footer.push(`<span class="getbible-language-code">${reference.languageCode}</span>`);
+      }
+      const verses = reference.verses
         .map(verse => `<span class="getbible-verse">${verse.verse}. ${verse.text}</span>`)
         .join("\n");
       display.push(`<span class="getbible-verses">${verses}</span>`);

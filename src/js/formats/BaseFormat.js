@@ -18,7 +18,7 @@ export class BaseFormat {
    *
    * @returns {Action} The current actions.
    */
-  action() {
+  get action() {
     return this.#action;
   }
 

@@ -16,26 +16,6 @@ export class Scripture {
   }
 
   /**
-   * Gets a reference by its numerical index.
-   *
-   * @param {number} index - The index of the reference.
-   * @returns {Reference|null} The Reference instance or null if out of bounds.
-   */
-  getReference(index) {
-    return (index >= 0 && index < this.#references.length) ? this.#references[index] : null;
-  }
-
-  /**
-   * Gets the translation.
-   *
-   * @param {number} index - The index of the reference.
-   * @returns {Reference|null} The Reference instance or null if out of bounds.
-   */
-  getReference(index) {
-    return (index >= 0 && index < this.#references.length) ? this.#references[index] : null;
-  }
-
-  /**
    * Iterates over all references and performs a callback function.
    *
    * @param {Function} callback - The callback function to execute for each chapter.

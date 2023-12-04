@@ -20,7 +20,7 @@ export class Element {
       'tooltip': TooltipElement
     };
 
-    const format = action.getFormat();
+    const format = action.format;
     const ElementType = elementTypes[format] || InlineElement;
     this.element = new ElementType(action);
 

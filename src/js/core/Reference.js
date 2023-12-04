@@ -8,8 +8,38 @@ export class Reference {
    * Initializes the BibleVerse object with verse data.
    *
    * @param {Object} data - The JSON data containing verse information.
+   * @param {string} data.translation - The name of the translation.
+   * @param {string} data.abbreviation - The abbreviation of the translation.
+   * @param {string} data.language - The full language name.
+   * @param {string} data.lang - The language code.
+   * @param {string} data.direction - The text direction (LTR or RTL).
+   * @param {string} data.encoding - The encoding format (e.g., UTF-8).
+   * @param {number} data.book_nr - The book number.
+   * @param {string} data.book_name - The name of the book.
+   * @param {number} data.chapter - The chapter number.
+   * @param {string} data.name - The name of the chapter.
+   * @param {Array<Object>} data.verses - An array of objects representing each verse.
+   * @param {string|Array<string>} data.ref - The local reference string or array of strings.
    */
   constructor(data) {
+    // Simple validation to check if essential properties are present
+    const requiredProperties = [
+      'translation', 'abbreviation', 'language', 'lang',
+      'direction', 'encoding', 'book_nr', 'book_name',
+      'chapter', 'name', 'verses', 'ref'
+    ];
+
+    if (!data || typeof data !== 'object') {
+      throw new Error('Data must be a valid object.');
+    }
+
+    requiredProperties.forEach(prop => {
+      if (data[prop] === undefined || data[prop] === null) {
+        throw new Error(`Missing required property: '${prop}'.`);
+      }
+    });
+
+    // Assign the data after validation
     this.#data = data;
   }
 
@@ -18,7 +48,7 @@ export class Reference {
    *
    * @returns {string} The name of the translation.
    */
-  getTranslation() {
+  get translation() {
     return this.#data.translation;
   }
 
@@ -27,26 +57,26 @@ export class Reference {
    *
    * @returns {string} The abbreviation of the translation.
    */
-  getAbbreviation() {
+  get abbreviation() {
     return this.#data.abbreviation;
-  }
-
-  /**
-   * Retrieves the language code.
-   *
-   * @returns {string} The language code.
-   */
-  getLanguage() {
-    return this.#data.lang;
   }
 
   /**
    * Retrieves the full language name.
    *
+   * @returns {string} The language code.
+   */
+  get language() {
+    return this.#data.language;
+  }
+
+  /**
+   * Retrieves the language code.
+   *
    * @returns {string} The full name of the language.
    */
-  getLanguageName() {
-    return this.#data.language;
+  get languageCode() {
+    return this.#data.lang;
   }
 
   /**
@@ -54,7 +84,7 @@ export class Reference {
    *
    * @returns {string} The direction of the text (LTR or RTL).
    */
-  getTextDirection() {
+  get textDirection() {
     return this.#data.direction;
   }
 
@@ -63,7 +93,7 @@ export class Reference {
    *
    * @returns {string} The encoding format (e.g., UTF-8).
    */
-  getEncoding() {
+  get encoding() {
     return this.#data.encoding;
   }
 
@@ -72,7 +102,7 @@ export class Reference {
    *
    * @returns {number} The book number.
    */
-  getBookNumber() {
+  get bookNumber() {
     return this.#data.book_nr;
   }
 
@@ -81,7 +111,7 @@ export class Reference {
    *
    * @returns {string} The name of the book.
    */
-  getBookName() {
+  get bookName() {
     return this.#data.book_name;
   }
 
@@ -90,7 +120,7 @@ export class Reference {
    *
    * @returns {number} The chapter number.
    */
-  getChapter() {
+  get chapter() {
     return this.#data.chapter;
   }
 
@@ -99,16 +129,17 @@ export class Reference {
    *
    * @returns {string} The name of the chapter.
    */
-  getChapterName() {
+  get chapterName() {
     return this.#data.name;
   }
 
   /**
    * Retrieves all verses of the chapter.
    *
-   * @returns {Array<Object>} An array of objects representing each verse.
+   * @returns {Array<{chapter: number, verse: number, name: string, text: string}>}
+   *          An array of objects representing each verse.
    */
-  getVerses() {
+  get verses() {
     return this.#data.verses;
   }
 
@@ -134,11 +165,21 @@ export class Reference {
   }
 
   /**
+   * Get the local reference string set in the website.
+   *
+   * @returns {string} The reference string.
+   */
+  get localReference() {
+    // Ensure that this.#data.ref is treated as an array.
+    return Array.isArray(this.#data.ref) ? this.#data.ref.join('; ') : this.#data.ref;
+  }
+
+  /**
    * Generates a reference string for the verses.
    *
    * @returns {string} The reference string.
    */
-  getReference() {
+  get reference() {
     const verseNumbers = this.#data.verses.map(verse => verse.verse).sort((a, b) => a - b);
     let refString = `${this.#data.name}:`;
     let ranges = {};

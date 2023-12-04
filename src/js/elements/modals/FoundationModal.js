@@ -20,8 +20,8 @@ export class FoundationModal extends BaseModal {
 
   create(content) {
     const modalHtml = `
-      <div class="reveal" id="${this.getModalId()}" data-reveal>
-        <div id="${this.getModalId()}-content">
+      <div class="reveal" id="${this.id}" data-reveal>
+        <div id="${this.id}-content">
           ${content}
         </div>
         <button class="close-button" data-close aria-label="Close modal" type="button">
@@ -29,10 +29,10 @@ export class FoundationModal extends BaseModal {
         </button>
       </div>`;
     this.insertIntoDOM(modalHtml);
-    this.modalElement = new Foundation.Reveal(document.getElementById(this.getModalId()));
+    this.modalElement = new Foundation.Reveal(document.getElementById(this.id));
   }
 
   initializeTrigger() {
-    this.getElement().setAttribute('data-open', this.getModalId());
+    this.element.setAttribute('data-open', this.id);
   }
 }

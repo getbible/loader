@@ -12,7 +12,7 @@ export class BaseModal {
   constructor(action) {
     this.#modalId = `modal-${Math.random().toString(36).slice(2, 11)}`;
     this.#action = action;
-    this.getElement().style.cursor = 'pointer';
+    this.element.style.cursor = 'pointer';
     this.initializeTrigger();
   }
 
@@ -22,11 +22,11 @@ export class BaseModal {
    * @param {string} content - The content to load into the modal.
    */
   load(content) {
-    const existingModal = document.getElementById(this.getModalId());
+    const existingModal = document.getElementById(this.id);
     // Check if modal already exists
     if (existingModal) {
       // Update the content of the existing modal
-      const contentDiv = document.getElementById(`${this.getModalId()}-content`);
+      const contentDiv = document.getElementById(`${this.id}-content`);
       if (contentDiv) {
         contentDiv.innerHTML += content;
       }
@@ -52,17 +52,17 @@ export class BaseModal {
    */
   create(content) {
     const modalHtml = `
-    <div id="${this.getModalId()}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.5); justify-content:center; align-items:center;">
+    <div id="${this.id}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.5); justify-content:center; align-items:center;">
       <div style="position:relative; background-color:white; padding:20px; border-radius:5px; max-width:300px;">
-        <button class="getbible-modal-close" type="button" onclick="document.getElementById('${this.getModalId()}').style.display='none'" style="position:absolute; top:7px; right:7px; border:none; background:transparent; font-size:20px; cursor:pointer;">✖</button>
-        <div id="${this.getModalId()}-content">
+        <button class="getbible-modal-close" type="button" onclick="document.getElementById('${this.id}').style.display='none'" style="position:absolute; top:7px; right:7px; border:none; background:transparent; font-size:20px; cursor:pointer;">✖</button>
+        <div id="${this.id}-content">
           ${content}
         </div>
       </div>
     </div>`;
     this.insertIntoDOM(modalHtml);
 
-    const modalElement = document.getElementById(this.getModalId());
+    const modalElement = document.getElementById(this.id);
     modalElement.addEventListener('click', (event) => {
       if (event.target === modalElement) {
         modalElement.style.display = 'none';
@@ -75,8 +75,8 @@ export class BaseModal {
    *
    */
   initializeTrigger() {
-    this.getElement().addEventListener('click', () => {
-      document.getElementById(this.getModalId()).style.display = 'flex';
+    this.element.addEventListener('click', () => {
+      document.getElementById(this.id).style.display = 'flex';
     });
   }
 
@@ -85,7 +85,7 @@ export class BaseModal {
    *
    * @returns {string} - The modal ID
    */
-  getModalId() {
+  get id() {
     return this.#modalId;
   }
 
@@ -94,7 +94,7 @@ export class BaseModal {
    *
    * @returns {HTMLElement} - The DOM element being worked with.
    */
-  getElement() {
-    return this.#action.getElement();
+  get element() {
+    return this.#action.element;
   }
 }

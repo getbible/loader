@@ -34,7 +34,6 @@ export class TooltipElement {
    *
    * @param {Action} action - The action element triggering the tooltip.
    * @returns {BaseTooltip|BootstrapTooltip|UikitTooltip|FoundationTooltip|TailwindTooltip} The tooltip instance.
-   * @param debug
    */
   static framework(action) {
     const frameworks = {

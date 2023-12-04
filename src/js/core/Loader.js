@@ -19,7 +19,7 @@ export class Loader {
    * Allows for dependency injection of the Api class for easier testing and flexibility.
    * @param {Api} api - Instance of Api class for making API calls.
    */
-  constructor(api = new Api()) {
+  constructor(api) {
     this.#api = api;
   }
 
@@ -74,7 +74,7 @@ export class Loader {
    */
   async #processReferences(validReferences) {
     for (const reference of validReferences) {
-      for (const translation of this.#action.getTranslations()) {
+      for (const translation of this.#action.translations) {
         try {
           const scripture = await this.#api.get(reference, translation);
           if (scripture) {

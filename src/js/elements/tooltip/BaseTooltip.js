@@ -10,7 +10,7 @@ export class BaseTooltip {
    */
   constructor(action) {
     this.#action = action;
-    this.getElement().style.cursor = 'help';
+    this.element.style.cursor = 'help';
   }
 
   /**
@@ -21,9 +21,9 @@ export class BaseTooltip {
    * @throws {Error} Throws an error if the trigger elements is not valid.
    */
   load(content) {
-    const existingTitle = this.getElement().getAttribute('title');
+    const existingTitle = this.element.getAttribute('title');
     const newTitle = existingTitle ? existingTitle + "\n" + content : content;
-    this.getElement().setAttribute('title', newTitle);
+    this.element.setAttribute('title', newTitle);
   }
 
   /**
@@ -31,7 +31,7 @@ export class BaseTooltip {
    *
    * @returns {HTMLElement} - The DOM element being worked with.
    */
-  getElement() {
-    return this.#action.getElement();
+  get element() {
+    return this.#action.element;
   }
 }

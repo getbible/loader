@@ -14,7 +14,7 @@ export class InlineElement {
   constructor(action) {
     this.#action = action;
     // Clear initial content
-    this.getElement().innerHTML = '';
+    this.element.innerHTML = '';
   }
 
   /**
@@ -23,8 +23,8 @@ export class InlineElement {
    * @param {string} content - The content to load into the trigger element.
    */
   load(content) {
-    const existingContent = this.getElement().innerHTML;
-    this.getElement().innerHTML = existingContent ? `${existingContent}\n ${content}` : content;
+    const existingContent = this.element.innerHTML;
+    this.element.innerHTML = existingContent ? `${existingContent}\n ${content}` : content;
   }
 
   /**
@@ -32,7 +32,7 @@ export class InlineElement {
    *
    * @returns {HTMLElement} - The DOM element being worked with.
    */
-  getElement() {
-    return this.#action.getElement();
+  get element() {
+    return this.#action.element;
   }
 }

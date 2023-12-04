@@ -1,5 +1,5 @@
 /**
- * getBible Loader v3.0.2
+ * getBible Loader v3.0.3
  * https://getbible.net
  * (c) 2014 - 2023 Llewellyn van der Merwe
  * MIT License
@@ -155,8 +155,38 @@
      * Initializes the BibleVerse object with verse data.
      *
      * @param {Object} data - The JSON data containing verse information.
+     * @param {string} data.translation - The name of the translation.
+     * @param {string} data.abbreviation - The abbreviation of the translation.
+     * @param {string} data.language - The full language name.
+     * @param {string} data.lang - The language code.
+     * @param {string} data.direction - The text direction (LTR or RTL).
+     * @param {string} data.encoding - The encoding format (e.g., UTF-8).
+     * @param {number} data.book_nr - The book number.
+     * @param {string} data.book_name - The name of the book.
+     * @param {number} data.chapter - The chapter number.
+     * @param {string} data.name - The name of the chapter.
+     * @param {Array<Object>} data.verses - An array of objects representing each verse.
+     * @param {string|Array<string>} data.ref - The local reference string or array of strings.
      */
     constructor(data) {
+      // Simple validation to check if essential properties are present
+      const requiredProperties = [
+        'translation', 'abbreviation', 'language', 'lang',
+        'direction', 'encoding', 'book_nr', 'book_name',
+        'chapter', 'name', 'verses', 'ref'
+      ];
+
+      if (!data || typeof data !== 'object') {
+        throw new Error('Data must be a valid object.');
+      }
+
+      requiredProperties.forEach(prop => {
+        if (data[prop] === undefined || data[prop] === null) {
+          throw new Error(`Missing required property: '${prop}'.`);
+        }
+      });
+
+      // Assign the data after validation
       this.#data = data;
     }
 
@@ -165,7 +195,7 @@
      *
      * @returns {string} The name of the translation.
      */
-    getTranslation() {
+    get translation() {
       return this.#data.translation;
     }
 
@@ -174,26 +204,26 @@
      *
      * @returns {string} The abbreviation of the translation.
      */
-    getAbbreviation() {
+    get abbreviation() {
       return this.#data.abbreviation;
-    }
-
-    /**
-     * Retrieves the language code.
-     *
-     * @returns {string} The language code.
-     */
-    getLanguage() {
-      return this.#data.lang;
     }
 
     /**
      * Retrieves the full language name.
      *
+     * @returns {string} The language code.
+     */
+    get language() {
+      return this.#data.language;
+    }
+
+    /**
+     * Retrieves the language code.
+     *
      * @returns {string} The full name of the language.
      */
-    getLanguageName() {
-      return this.#data.language;
+    get languageCode() {
+      return this.#data.lang;
     }
 
     /**
@@ -201,7 +231,7 @@
      *
      * @returns {string} The direction of the text (LTR or RTL).
      */
-    getTextDirection() {
+    get textDirection() {
       return this.#data.direction;
     }
 
@@ -210,7 +240,7 @@
      *
      * @returns {string} The encoding format (e.g., UTF-8).
      */
-    getEncoding() {
+    get encoding() {
       return this.#data.encoding;
     }
 
@@ -219,7 +249,7 @@
      *
      * @returns {number} The book number.
      */
-    getBookNumber() {
+    get bookNumber() {
       return this.#data.book_nr;
     }
 
@@ -228,7 +258,7 @@
      *
      * @returns {string} The name of the book.
      */
-    getBookName() {
+    get bookName() {
       return this.#data.book_name;
     }
 
@@ -237,7 +267,7 @@
      *
      * @returns {number} The chapter number.
      */
-    getChapter() {
+    get chapter() {
       return this.#data.chapter;
     }
 
@@ -246,16 +276,17 @@
      *
      * @returns {string} The name of the chapter.
      */
-    getChapterName() {
+    get chapterName() {
       return this.#data.name;
     }
 
     /**
      * Retrieves all verses of the chapter.
      *
-     * @returns {Array<Object>} An array of objects representing each verse.
+     * @returns {Array<{chapter: number, verse: number, name: string, text: string}>}
+     *          An array of objects representing each verse.
      */
-    getVerses() {
+    get verses() {
       return this.#data.verses;
     }
 
@@ -281,11 +312,21 @@
     }
 
     /**
+     * Get the local reference string set in the website.
+     *
+     * @returns {string} The reference string.
+     */
+    get localReference() {
+      // Ensure that this.#data.ref is treated as an array.
+      return Array.isArray(this.#data.ref) ? this.#data.ref.join('; ') : this.#data.ref;
+    }
+
+    /**
      * Generates a reference string for the verses.
      *
      * @returns {string} The reference string.
      */
-    getReference() {
+    get reference() {
       const verseNumbers = this.#data.verses.map(verse => verse.verse).sort((a, b) => a - b);
       let refString = `${this.#data.name}:`;
       let ranges = {};
@@ -332,26 +373,6 @@
     }
 
     /**
-     * Gets a reference by its numerical index.
-     *
-     * @param {number} index - The index of the reference.
-     * @returns {Reference|null} The Reference instance or null if out of bounds.
-     */
-    getReference(index) {
-      return (index >= 0 && index < this.#references.length) ? this.#references[index] : null;
-    }
-
-    /**
-     * Gets the translation.
-     *
-     * @param {number} index - The index of the reference.
-     * @returns {Reference|null} The Reference instance or null if out of bounds.
-     */
-    getReference(index) {
-      return (index >= 0 && index < this.#references.length) ? this.#references[index] : null;
-    }
-
-    /**
      * Iterates over all references and performs a callback function.
      *
      * @param {Function} callback - The callback function to execute for each chapter.
@@ -370,9 +391,11 @@
     #translations;
     #showBookName;
     #showReference;
+    #showLocalReference;
     #showTranslation;
     #showAbbreviation;
     #showLanguage;
+    #showLanguageCode;
 
     /**
      * Initializes the Actions object with a DOM element and its data attributes.
@@ -390,9 +413,15 @@
       this.#translations = (element.dataset.translation || 'kjv').toLowerCase().split(';').map(translation => translation.trim());
       this.#showBookName = element.dataset.showBookName ? parseInt(element.dataset.showBookName, 10) : 0;
       this.#showReference = element.dataset.showReference ? parseInt(element.dataset.showReference, 10) : 1;
+      this.#showLocalReference = element.dataset.showLocalReference ? parseInt(element.dataset.showLocalReference, 10) : 0;
       this.#showTranslation = element.dataset.showTranslation ? parseInt(element.dataset.showTranslation, 10) : 0;
       this.#showAbbreviation = element.dataset.showAbbreviation ? parseInt(element.dataset.showAbbreviation, 10) : 0;
       this.#showLanguage = element.dataset.showLanguage ? parseInt(element.dataset.showLanguage, 10) : 0;
+      this.#showLanguageCode = element.dataset.showLanguageCode ? parseInt(element.dataset.showLanguageCode, 10) : 0;
+
+      if (this.#showLocalReference){
+        this.#showReference = 0;
+      }
     }
 
     /**
@@ -400,7 +429,7 @@
      *
      * @returns {Array<string>} An array of translation strings.
      */
-    getTranslations() {
+    get translations() {
       return this.#translations;
     }
 
@@ -409,7 +438,7 @@
      *
      * @returns {number} The show book name flag (0 or 1).
      */
-    showBookName() {
+    get bookName() {
       return this.#showBookName;
     }
 
@@ -418,8 +447,17 @@
      *
      * @returns {number} The show reference flag (0 or 1).
      */
-    showReference() {
+    get reference() {
       return this.#showReference;
+    }
+
+    /**
+     * Retrieves the show local reference flag.
+     *
+     * @returns {number} The show reference flag (0 or 1).
+     */
+    get localReference() {
+      return this.#showLocalReference;
     }
 
     /**
@@ -427,7 +465,7 @@
      *
      * @returns {number} The show translation flag (0 or 1).
      */
-    showTranslation() {
+    get translation() {
       return this.#showTranslation;
     }
 
@@ -436,7 +474,7 @@
      *
      * @returns {number} The show abbreviation flag (0 or 1).
      */
-    showAbbreviation() {
+    get abbreviation() {
       return this.#showAbbreviation;
     }
 
@@ -445,8 +483,17 @@
      *
      * @returns {number} The show language flag (0 or 1).
      */
-    showLanguage() {
+    get language() {
       return this.#showLanguage;
+    }
+
+    /**
+     * Retrieves the show language code flog.
+     *
+     * @returns {number} The show language flag (0 or 1).
+     */
+    get languageCode() {
+      return this.#showLanguageCode;
     }
 
     /**
@@ -454,7 +501,7 @@
      *
      * @returns {string} The element format.
      */
-    getFormat() {
+    get format() {
       return this.#format;
     }
 
@@ -463,7 +510,7 @@
      *
      * @returns {HTMLElement} The DOM element associated with this object.
      */
-    getElement() {
+    get element() {
       return this.#element;
     }
   }
@@ -485,7 +532,7 @@
      *
      * @returns {Action} The current actions.
      */
-    action() {
+    get action() {
       return this.#action;
     }
 
@@ -516,27 +563,33 @@
       let display = [];
       scripture.forEachReference((reference) => {
         let header = [];
-        display.push(`<div dir="${reference.getTextDirection().toUpperCase()}" class="getbible-reference-block">`);
-        if (this.action().showBookName()) {
-          header.push(`<span class="getbible-book-name">${reference.getBookName()}</span>`);
+        display.push(`<div dir="${reference.textDirection.toUpperCase()}" class="getbible-reference-block">`);
+        if (this.action.bookName) {
+          header.push(`<span class="getbible-book-name">${reference.bookName}</span>`);
         }
-        if (this.action().showReference()) {
-          header.push(`<span class="getbible-reference">${reference.getReference()}</span>`);
+        if (this.action.reference) {
+          header.push(`<span class="getbible-reference">${reference.reference}</span>`);
         }
-        if (this.action().showTranslation()) {
-          header.push(`<span class="getbible-translation">${reference.getTranslation()}</span>`);
+        if (this.action.localReference) {
+          header.push(`<span class="getbible-reference">${reference.localReference}</span>`);
         }
-        if (this.action().showAbbreviation()) {
-          header.push(`<span class="getbible-abbreviation">${reference.getAbbreviation()}</span>`);
+        if (this.action.translation) {
+          header.push(`<span class="getbible-translation">${reference.translation}</span>`);
         }
-        if (this.action().showLanguage()) {
-          header.push(`<span class="getbible-language">${reference.getLanguage()}</span>`);
+        if (this.action.abbreviation) {
+          header.push(`<span class="getbible-abbreviation">${reference.abbreviation}</span>`);
+        }
+        if (this.action.language) {
+          header.push(`<span class="getbible-language">${reference.language}</span>`);
+        }
+        if (this.action.languageCode) {
+          header.push(`<span class="getbible-language-code">${reference.languageCode}</span>`);
         }
         // Construct the header
         if (header.length > 0) {
           display.push(`<b class="getbible-header">${header.join(' - ')}</b>`);
         }
-        const verses = reference.getVerses()
+        const verses = reference.verses
           .map(verse => `<div class="getbible-verse">${verse.verse}. ${verse.text}</div>`)
           .join("\n");
         display.push(`<div class="getbible-verses">${verses}</div>`);
@@ -562,23 +615,29 @@
       let display = [];
       scripture.forEachReference((reference) => {
         let footer = [];
-        display.push(`<div dir="${reference.getTextDirection().toUpperCase()}" class="getbible-reference-inline">`);
-        if (this.action().showBookName()) {
-          footer.push(`<span class="getbible-book-name">${reference.getBookName()}</span>`);
+        display.push(`<div dir="${reference.textDirection.toUpperCase()}" class="getbible-reference-inline">`);
+        if (this.action.bookName) {
+          footer.push(`<span class="getbible-book-name">${reference.bookName}</span>`);
         }
-        if (this.action().showReference()) {
-          footer.push(`<span class="getbible-reference">${reference.getReference()}</span>`);
+        if (this.action.reference) {
+          footer.push(`<span class="getbible-reference">${reference.reference}</span>`);
         }
-        if (this.action().showTranslation()) {
-          footer.push(`<span class="getbible-translation">${reference.getTranslation()}</span>`);
+        if (this.action.localReference) {
+          footer.push(`<span class="getbible-reference">${reference.localReference}</span>`);
         }
-        if (this.action().showAbbreviation()) {
-          footer.push(`<span class="getbible-abbreviation">${reference.getAbbreviation()}</span>`);
+        if (this.action.translation) {
+          footer.push(`<span class="getbible-translation">${reference.translation}</span>`);
         }
-        if (this.action().showLanguage()) {
-          footer.push(`<span class="getbible-language">${reference.getLanguage()}</span>`);
+        if (this.action.abbreviation) {
+          footer.push(`<span class="getbible-abbreviation">${reference.abbreviation}</span>`);
         }
-        const verses = reference.getVerses()
+        if (this.action.language) {
+          footer.push(`<span class="getbible-language">${reference.language}</span>`);
+        }
+        if (this.action.languageCode) {
+          footer.push(`<span class="getbible-language-code">${reference.languageCode}</span>`);
+        }
+        const verses = reference.verses
           .map(verse => `<span class="getbible-verse">${verse.verse}. ${verse.text}</span>`)
           .join("\n");
         display.push(`<span class="getbible-verses">${verses}</span>`);
@@ -608,27 +667,33 @@
       let display = [];
       scripture.forEachReference((reference) => {
         let header = [];
-        if (this.action().showBookName()) {
-          header.push(`${reference.getBookName()}`);
+        if (this.action.bookName) {
+          header.push(`${reference.bookName}`);
         }
-        if (this.action().showReference()) {
-          header.push(`${reference.getReference()}`);
+        if (this.action.reference) {
+          header.push(`${reference.reference}`);
         }
-        if (this.action().showTranslation()) {
-          header.push(`${reference.getTranslation()}`);
+        if (this.action.localReference) {
+          header.push(`${reference.localReference}`);
         }
-        if (this.action().showAbbreviation()) {
-          header.push(`${reference.getAbbreviation()}`);
+        if (this.action.translation) {
+          header.push(`${reference.translation}`);
         }
-        if (this.action().showLanguage()) {
-          header.push(`${reference.getLanguage()}`);
+        if (this.action.abbreviation) {
+          header.push(`${reference.abbreviation}`);
+        }
+        if (this.action.language) {
+          header.push(`${reference.language}`);
+        }
+        if (this.action.languageCode) {
+          header.push(`${reference.languageCode}`);
         }
         // Construct the header
         if (header.length > 0) {
           display.push(`[${header.join(' - ')}]`);
         }
         display.push(
-          reference.getVerses()
+          reference.verses
             .map(verse => `${verse.verse}. ${verse.text}`)
             .join("\n")
         );
@@ -655,7 +720,7 @@
         'tooltip': PlainFormat
       };
 
-      const format = action.getFormat();
+      const format = action.format;
       const FormatType = formatTypes[format] || InlineFormat;
       this.format = new FormatType(action);
     }
@@ -683,7 +748,7 @@
     constructor(action) {
       this.#modalId = `modal-${Math.random().toString(36).slice(2, 11)}`;
       this.#action = action;
-      this.getElement().style.cursor = 'pointer';
+      this.element.style.cursor = 'pointer';
       this.initializeTrigger();
     }
 
@@ -693,11 +758,11 @@
      * @param {string} content - The content to load into the modal.
      */
     load(content) {
-      const existingModal = document.getElementById(this.getModalId());
+      const existingModal = document.getElementById(this.id);
       // Check if modal already exists
       if (existingModal) {
         // Update the content of the existing modal
-        const contentDiv = document.getElementById(`${this.getModalId()}-content`);
+        const contentDiv = document.getElementById(`${this.id}-content`);
         if (contentDiv) {
           contentDiv.innerHTML += content;
         }
@@ -723,17 +788,17 @@
      */
     create(content) {
       const modalHtml = `
-    <div id="${this.getModalId()}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.5); justify-content:center; align-items:center;">
+    <div id="${this.id}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.5); justify-content:center; align-items:center;">
       <div style="position:relative; background-color:white; padding:20px; border-radius:5px; max-width:300px;">
-        <button class="getbible-modal-close" type="button" onclick="document.getElementById('${this.getModalId()}').style.display='none'" style="position:absolute; top:7px; right:7px; border:none; background:transparent; font-size:20px; cursor:pointer;">✖</button>
-        <div id="${this.getModalId()}-content">
+        <button class="getbible-modal-close" type="button" onclick="document.getElementById('${this.id}').style.display='none'" style="position:absolute; top:7px; right:7px; border:none; background:transparent; font-size:20px; cursor:pointer;">✖</button>
+        <div id="${this.id}-content">
           ${content}
         </div>
       </div>
     </div>`;
       this.insertIntoDOM(modalHtml);
 
-      const modalElement = document.getElementById(this.getModalId());
+      const modalElement = document.getElementById(this.id);
       modalElement.addEventListener('click', (event) => {
         if (event.target === modalElement) {
           modalElement.style.display = 'none';
@@ -746,8 +811,8 @@
      *
      */
     initializeTrigger() {
-      this.getElement().addEventListener('click', () => {
-        document.getElementById(this.getModalId()).style.display = 'flex';
+      this.element.addEventListener('click', () => {
+        document.getElementById(this.id).style.display = 'flex';
       });
     }
 
@@ -756,7 +821,7 @@
      *
      * @returns {string} - The modal ID
      */
-    getModalId() {
+    get id() {
       return this.#modalId;
     }
 
@@ -765,8 +830,8 @@
      *
      * @returns {HTMLElement} - The DOM element being worked with.
      */
-    getElement() {
-      return this.#action.getElement();
+    get element() {
+      return this.#action.element;
     }
   }
 
@@ -776,19 +841,19 @@
     }
 
     show() {
-      UIkit.modal(`#${this.getModalId()}`).show();
+      UIkit.modal(`#${this.id}`).show();
     }
 
     hide() {
-      UIkit.modal(`#${this.getModalId()}`).hide();
+      UIkit.modal(`#${this.id}`).hide();
     }
 
     create(content) {
       const modalHtml = `
-      <div id="${this.getModalId()}" uk-modal>
+      <div id="${this.id}" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
           <button class="uk-modal-close-default" type="button" uk-close></button>
-          <div id="${this.getModalId()}-content">
+          <div id="${this.id}-content">
             ${content}
           </div>
         </div>
@@ -797,7 +862,7 @@
     }
 
     initializeTrigger() {
-      this.getElement().setAttribute('uk-toggle', `target: #${this.getModalId()}`);
+      this.element.setAttribute('uk-toggle', `target: #${this.id}`);
     }
   }
 
@@ -807,12 +872,12 @@
     }
 
     show() {
-      const modal = new bootstrap.Modal(document.getElementById(this.getModalId()));
+      const modal = new bootstrap.Modal(document.getElementById(this.id));
       modal.show();
     }
 
     hide() {
-      const modal = bootstrap.Modal.getInstance(document.getElementById(this.getModalId()));
+      const modal = bootstrap.Modal.getInstance(document.getElementById(this.id));
       if (modal) {
         modal.hide();
       }
@@ -820,13 +885,13 @@
 
     create(content) {
       const modalHtml = `
-      <div class="modal fade" id="${this.getModalId()}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal fade" id="${this.id}" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content p-3">
             <div class="modal-header">
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="${this.getModalId()}-content" class="modal-body">
+            <div id="${this.id}-content" class="modal-body">
               ${content}
             </div>
           </div>
@@ -836,8 +901,8 @@
     }
 
     initializeTrigger() {
-      this.getElement().setAttribute('data-bs-toggle', 'modal');
-      this.getElement().setAttribute('data-bs-target', `#${this.getModalId()}`);
+      this.element.setAttribute('data-bs-toggle', 'modal');
+      this.element.setAttribute('data-bs-target', `#${this.id}`);
     }
   }
 
@@ -861,8 +926,8 @@
 
     create(content) {
       const modalHtml = `
-      <div class="reveal" id="${this.getModalId()}" data-reveal>
-        <div id="${this.getModalId()}-content">
+      <div class="reveal" id="${this.id}" data-reveal>
+        <div id="${this.id}-content">
           ${content}
         </div>
         <button class="close-button" data-close aria-label="Close modal" type="button">
@@ -870,11 +935,11 @@
         </button>
       </div>`;
       this.insertIntoDOM(modalHtml);
-      this.modalElement = new Foundation.Reveal(document.getElementById(this.getModalId()));
+      this.modalElement = new Foundation.Reveal(document.getElementById(this.id));
     }
 
     initializeTrigger() {
-      this.getElement().setAttribute('data-open', this.getModalId());
+      this.element.setAttribute('data-open', this.id);
     }
   }
 
@@ -884,29 +949,29 @@
     }
 
     show() {
-      document.getElementById(this.getModalId()).classList.remove('hidden');
+      document.getElementById(this.id).classList.remove('hidden');
     }
 
     hide() {
-      document.getElementById(this.getModalId()).classList.add('hidden');
+      document.getElementById(this.id).classList.add('hidden');
     }
 
     create(content) {
       const modalHtml = `
-      <div class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="${this.getModalId()}">
+      <div class="modal hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="${this.id}">
         <div class="modal-content container mx-auto p-5 bg-white">
-          <div id="${this.getModalId()}-content">
+          <div id="${this.id}-content">
             ${content}
           </div>
-          <button class="close-button" onclick="document.getElementById('${this.getModalId()}').classList.add('hidden')">Close</button>
+          <button class="close-button" onclick="document.getElementById('${this.id}').classList.add('hidden')">Close</button>
         </div>
       </div>`;
       this.insertIntoDOM(modalHtml);
     }
 
     initializeTrigger() {
-      this.getElement().addEventListener('click', () => {
-        document.getElementById(this.getModalId()).classList.remove('hidden');
+      this.element.addEventListener('click', () => {
+        document.getElementById(this.id).classList.remove('hidden');
       });
     }
   }
@@ -979,7 +1044,7 @@
     constructor(action) {
       this.#action = action;
       // Clear initial content
-      this.getElement().innerHTML = '';
+      this.element.innerHTML = '';
     }
 
     /**
@@ -988,8 +1053,8 @@
      * @param {string} content - The content to load into the trigger element.
      */
     load(content) {
-      const existingContent = this.getElement().innerHTML;
-      this.getElement().innerHTML = existingContent ? `${existingContent}\n ${content}` : content;
+      const existingContent = this.element.innerHTML;
+      this.element.innerHTML = existingContent ? `${existingContent}\n ${content}` : content;
     }
 
     /**
@@ -997,8 +1062,8 @@
      *
      * @returns {HTMLElement} - The DOM element being worked with.
      */
-    getElement() {
-      return this.#action.getElement();
+    get element() {
+      return this.#action.element;
     }
   }
 
@@ -1012,7 +1077,7 @@
      */
     constructor(action) {
       this.#action = action;
-      this.getElement().style.cursor = 'help';
+      this.element.style.cursor = 'help';
     }
 
     /**
@@ -1023,9 +1088,9 @@
      * @throws {Error} Throws an error if the trigger elements is not valid.
      */
     load(content) {
-      const existingTitle = this.getElement().getAttribute('title');
+      const existingTitle = this.element.getAttribute('title');
       const newTitle = existingTitle ? existingTitle + "\n" + content : content;
-      this.getElement().setAttribute('title', newTitle);
+      this.element.setAttribute('title', newTitle);
     }
 
     /**
@@ -1033,8 +1098,8 @@
      *
      * @returns {HTMLElement} - The DOM element being worked with.
      */
-    getElement() {
-      return this.#action.getElement();
+    get element() {
+      return this.#action.element;
     }
   }
 
@@ -1057,14 +1122,14 @@
   }
 
   class UikitTooltip extends BaseTooltip {
-    constructor(triggerElement) {
-      super(triggerElement);
+    constructor(action) {
+      super(action);
     }
 
     load(content) {
       try {
         super.load(content);
-        UIkit.tooltip(this.triggerElement);
+        UIkit.tooltip(this.element);
       } catch (error) {
         console.error('Error loading UikitTooltip:', error);
       }
@@ -1078,9 +1143,9 @@
 
     load(content) {
       try {
-        this.getElement().setAttribute('data-tooltip', '');
+        this.element.setAttribute('data-tooltip', '');
         super.load(content);
-        this.getElement().classList.add('has-tip');
+        this.element.classList.add('has-tip');
 
         new Foundation.Tooltip(this.getElement(), {
           // Default options
@@ -1089,7 +1154,7 @@
           fadeInDuration: 150, // Duration of fade in animation in milliseconds
           showOn: 'all', // Can be 'all', 'large', 'medium', 'small'
           templateClasses: '', // Custom class(es) to be added to the tooltip template
-          tipText: () => this.getElement().getAttribute('title'), // Function to define tooltip text
+          tipText: () => this.element.getAttribute('title'), // Function to define tooltip text
           triggerClass: 'has-tip', // Class to be added on the trigger elements
           touchCloseText: 'tap to close', // Text for close button on touch devices
           positionClass: 'top', // Position of tooltip, can be 'top', 'bottom', 'left', 'right', etc.
@@ -1123,25 +1188,25 @@
       this.tooltipElement.id = this.tooltipId;
       this.tooltipElement.className = 'absolute invisible bg-gray-800 text-white text-xs px-2 py-1 rounded-md';
       this.tooltipElement.style.transition = 'visibility 0.3s linear, opacity 0.3s linear';
-      this.tooltipElement.textContent = this.getElement().getAttribute('title');
+      this.tooltipElement.textContent = this.element.getAttribute('title');
       document.body.appendChild(this.tooltipElement);
     }
 
     _initializeEvents() {
-      this.getElement().addEventListener('mouseenter', () => {
-        const rect = this.getElement().getBoundingClientRect();
-        this._title = this.getElement().getAttribute('title');
+      this.element.addEventListener('mouseenter', () => {
+        const rect = this.element.getBoundingClientRect();
+        this._title = this.element.getAttribute('title');
         this.tooltipElement.style.left = `${rect.left + window.scrollX}px`;
         this.tooltipElement.style.top = `${rect.bottom + 5 + window.scrollY}px`;
         this.tooltipElement.classList.remove('invisible');
         this.tooltipElement.classList.add('opacity-100');
-        this.getElement().setAttribute('title', '');
+        this.element.setAttribute('title', '');
       });
 
-      this.getElement().addEventListener('mouseleave', () => {
+      this.element.addEventListener('mouseleave', () => {
         this.tooltipElement.classList.add('invisible');
         this.tooltipElement.classList.remove('opacity-100');
-        this.getElement().setAttribute('title', this._title);
+        this.element.setAttribute('title', this._title);
       });
     }
   }
@@ -1175,7 +1240,6 @@
      *
      * @param {Action} action - The action element triggering the tooltip.
      * @returns {BaseTooltip|BootstrapTooltip|UikitTooltip|FoundationTooltip|TailwindTooltip} The tooltip instance.
-     * @param debug
      */
     static framework(action) {
       const frameworks = {
@@ -1218,7 +1282,7 @@
         'tooltip': TooltipElement
       };
 
-      const format = action.getFormat();
+      const format = action.format;
       const ElementType = elementTypes[format] || InlineElement;
       this.element = new ElementType(action);
 
@@ -1252,7 +1316,7 @@
      * Allows for dependency injection of the Api class for easier testing and flexibility.
      * @param {Api} api - Instance of Api class for making API calls.
      */
-    constructor(api = new Api()) {
+    constructor(api) {
       this.#api = api;
     }
 
@@ -1307,7 +1371,7 @@
      */
     async #processReferences(validReferences) {
       for (const reference of validReferences) {
-        for (const translation of this.#action.getTranslations()) {
+        for (const translation of this.#action.translations) {
           try {
             const scripture = await this.#api.get(reference, translation);
             if (scripture) {

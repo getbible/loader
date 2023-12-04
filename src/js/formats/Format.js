@@ -21,7 +21,7 @@ export class Format {
       'tooltip': PlainFormat
     };
 
-    const format = action.getFormat();
+    const format = action.format;
     const FormatType = formatTypes[format] || InlineFormat;
     this.format = new FormatType(action);
   }

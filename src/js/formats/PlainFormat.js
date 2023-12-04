@@ -16,27 +16,33 @@ export class PlainFormat extends BaseFormat {
     let display = [];
     scripture.forEachReference((reference) => {
       let header = [];
-      if (this.action().showBookName()) {
-        header.push(`${reference.getBookName()}`);
+      if (this.action.bookName) {
+        header.push(`${reference.bookName}`);
       }
-      if (this.action().showReference()) {
-        header.push(`${reference.getReference()}`);
+      if (this.action.reference) {
+        header.push(`${reference.reference}`);
       }
-      if (this.action().showTranslation()) {
-        header.push(`${reference.getTranslation()}`);
+      if (this.action.localReference) {
+        header.push(`${reference.localReference}`);
       }
-      if (this.action().showAbbreviation()) {
-        header.push(`${reference.getAbbreviation()}`);
+      if (this.action.translation) {
+        header.push(`${reference.translation}`);
       }
-      if (this.action().showLanguage()) {
-        header.push(`${reference.getLanguage()}`);
+      if (this.action.abbreviation) {
+        header.push(`${reference.abbreviation}`);
+      }
+      if (this.action.language) {
+        header.push(`${reference.language}`);
+      }
+      if (this.action.languageCode) {
+        header.push(`${reference.languageCode}`);
       }
       // Construct the header
       if (header.length > 0) {
         display.push(`[${header.join(' - ')}]`);
       }
       display.push(
-        reference.getVerses()
+        reference.verses
           .map(verse => `${verse.verse}. ${verse.text}`)
           .join("\n")
       );

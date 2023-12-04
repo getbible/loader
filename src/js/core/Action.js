@@ -7,9 +7,11 @@ export class Action {
   #translations;
   #showBookName;
   #showReference;
+  #showLocalReference;
   #showTranslation;
   #showAbbreviation;
   #showLanguage;
+  #showLanguageCode;
 
   /**
    * Initializes the Actions object with a DOM element and its data attributes.
@@ -27,9 +29,15 @@ export class Action {
     this.#translations = (element.dataset.translation || 'kjv').toLowerCase().split(';').map(translation => translation.trim());
     this.#showBookName = element.dataset.showBookName ? parseInt(element.dataset.showBookName, 10) : 0;
     this.#showReference = element.dataset.showReference ? parseInt(element.dataset.showReference, 10) : 1;
+    this.#showLocalReference = element.dataset.showLocalReference ? parseInt(element.dataset.showLocalReference, 10) : 0;
     this.#showTranslation = element.dataset.showTranslation ? parseInt(element.dataset.showTranslation, 10) : 0;
     this.#showAbbreviation = element.dataset.showAbbreviation ? parseInt(element.dataset.showAbbreviation, 10) : 0;
     this.#showLanguage = element.dataset.showLanguage ? parseInt(element.dataset.showLanguage, 10) : 0;
+    this.#showLanguageCode = element.dataset.showLanguageCode ? parseInt(element.dataset.showLanguageCode, 10) : 0;
+
+    if (this.#showLocalReference){
+      this.#showReference = 0;
+    }
   }
 
   /**
@@ -37,7 +45,7 @@ export class Action {
    *
    * @returns {Array<string>} An array of translation strings.
    */
-  getTranslations() {
+  get translations() {
     return this.#translations;
   }
 
@@ -46,7 +54,7 @@ export class Action {
    *
    * @returns {number} The show book name flag (0 or 1).
    */
-  showBookName() {
+  get bookName() {
     return this.#showBookName;
   }
 
@@ -55,8 +63,17 @@ export class Action {
    *
    * @returns {number} The show reference flag (0 or 1).
    */
-  showReference() {
+  get reference() {
     return this.#showReference;
+  }
+
+  /**
+   * Retrieves the show local reference flag.
+   *
+   * @returns {number} The show reference flag (0 or 1).
+   */
+  get localReference() {
+    return this.#showLocalReference;
   }
 
   /**
@@ -64,7 +81,7 @@ export class Action {
    *
    * @returns {number} The show translation flag (0 or 1).
    */
-  showTranslation() {
+  get translation() {
     return this.#showTranslation;
   }
 
@@ -73,7 +90,7 @@ export class Action {
    *
    * @returns {number} The show abbreviation flag (0 or 1).
    */
-  showAbbreviation() {
+  get abbreviation() {
     return this.#showAbbreviation;
   }
 
@@ -82,8 +99,17 @@ export class Action {
    *
    * @returns {number} The show language flag (0 or 1).
    */
-  showLanguage() {
+  get language() {
     return this.#showLanguage;
+  }
+
+  /**
+   * Retrieves the show language code flog.
+   *
+   * @returns {number} The show language flag (0 or 1).
+   */
+  get languageCode() {
+    return this.#showLanguageCode;
   }
 
   /**
@@ -91,7 +117,7 @@ export class Action {
    *
    * @returns {string} The element format.
    */
-  getFormat() {
+  get format() {
     return this.#format;
   }
 
@@ -100,7 +126,7 @@ export class Action {
    *
    * @returns {HTMLElement} The DOM element associated with this object.
    */
-  getElement() {
+  get element() {
     return this.#element;
   }
 }

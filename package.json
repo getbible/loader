@@ -2,7 +2,7 @@
   "name": "getbible.loader",
   "title": "getBible",
   "description": "GetBible is an intuitive and lightweight JavaScript solution for embedding Bible scripture into your website.",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "main": "dist/js/getBible.min.js",
   "scripts": {
     "build": "rollup -c"

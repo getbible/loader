@@ -6,19 +6,19 @@ export class UikitModal extends BaseModal {
   }
 
   show() {
-    UIkit.modal(`#${this.getModalId()}`).show();
+    UIkit.modal(`#${this.id}`).show();
   }
 
   hide() {
-    UIkit.modal(`#${this.getModalId()}`).hide();
+    UIkit.modal(`#${this.id}`).hide();
   }
 
   create(content) {
     const modalHtml = `
-      <div id="${this.getModalId()}" uk-modal>
+      <div id="${this.id}" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
           <button class="uk-modal-close-default" type="button" uk-close></button>
-          <div id="${this.getModalId()}-content">
+          <div id="${this.id}-content">
             ${content}
           </div>
         </div>
@@ -27,7 +27,7 @@ export class UikitModal extends BaseModal {
   }
 
   initializeTrigger() {
-    this.getElement().setAttribute('uk-toggle', `target: #${this.getModalId()}`);
+    this.element.setAttribute('uk-toggle', `target: #${this.id}`);
   }
 }
 

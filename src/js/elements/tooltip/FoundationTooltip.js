@@ -7,9 +7,9 @@ export class FoundationTooltip extends BaseTooltip {
 
   load(content) {
     try {
-      this.getElement().setAttribute('data-tooltip', '');
+      this.element.setAttribute('data-tooltip', '');
       super.load(content);
-      this.getElement().classList.add('has-tip');
+      this.element.classList.add('has-tip');
 
       new Foundation.Tooltip(this.getElement(), {
         // Default options
@@ -18,7 +18,7 @@ export class FoundationTooltip extends BaseTooltip {
         fadeInDuration: 150, // Duration of fade in animation in milliseconds
         showOn: 'all', // Can be 'all', 'large', 'medium', 'small'
         templateClasses: '', // Custom class(es) to be added to the tooltip template
-        tipText: () => this.getElement().getAttribute('title'), // Function to define tooltip text
+        tipText: () => this.element.getAttribute('title'), // Function to define tooltip text
         triggerClass: 'has-tip', // Class to be added on the trigger elements
         touchCloseText: 'tap to close', // Text for close button on touch devices
         positionClass: 'top', // Position of tooltip, can be 'top', 'bottom', 'left', 'right', etc.
