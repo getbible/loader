@@ -12,7 +12,7 @@ GetBible loader is an intuitive and lightweight JavaScript solution for embeddin
 
    ```html
    <!-- Include the GetBible tooltips script from jsDelivr CDN -->
-   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@3.0.3/dist/js/getBible.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/getbible/loader@3.1.0/dist/js/getBible.min.js"></script>
    ```
 
 2. **Markup Your Scripture References:**
@@ -38,11 +38,20 @@ Data attributes allow you to customize the behavior and display of the scripture
 - `data-show-translation`: Set to `1` to display the translation name in the tooltip.
 - `data-show-abbreviation`: Set to `1` to display the abbreviation of the translation in the tooltip.
 - `data-show-language`: Set to `1` to display the language of the translation in the tooltip.
+- `data-show-bible-link`: Set to `1` to display the link to the chapter on getBible.
+- `data-bible-url`: Specify another website url path to use for the `bible-link`. This website must have the [Joomla Component](https://git.vdm.dev/getBible/joomla-component) installed.
 
 Here's how you might use these attributes:
 
 ```html
-<span class="getBible" data-translation="kjv;aov" data-show-translation="1" data-show-language="1">John 3:16,19</span>
+<span
+   class="getBible"
+   data-format="inline"
+   data-translation="kjv;aov"
+   data-show-translation="1"
+   data-show-language="1"
+   data-bible-url="https://trueChristian.church/scriptures/"
+>John 3:16,19</span>
 ```
 
 In the example above, the tooltip for this list item will show text from both the King James Version (KJV) and another version abbreviated as AOV. It will also display the translation name and language for each scripture reference.
