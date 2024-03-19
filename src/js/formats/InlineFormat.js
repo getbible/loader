@@ -46,6 +46,13 @@ export class InlineFormat extends BaseFormat {
       if (footer.length > 0) {
         display.push(`<b class="getbible-footer">${footer.join(' - ')}</b>`);
       }
+      // Add link to chapter
+      if (this.action.bibleLink) {
+        display.push(`<a class="getbible-link"
+            href="${this.action.bibleUrl}${reference.bibleUrl}"
+            target="_blank" style="text-decoration: unset;"
+            title="${reference.reference}">${this.getExternalLinkImage(reference.reference)}</a>`);
+      }
       display.push(`</div>`);
     });
 

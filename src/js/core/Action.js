@@ -12,6 +12,8 @@ export class Action {
   #showAbbreviation;
   #showLanguage;
   #showLanguageCode;
+  #showBibleLink;
+  #bibleUrl;
 
   /**
    * Initializes the Actions object with a DOM element and its data attributes.
@@ -34,10 +36,33 @@ export class Action {
     this.#showAbbreviation = element.dataset.showAbbreviation ? parseInt(element.dataset.showAbbreviation, 10) : 0;
     this.#showLanguage = element.dataset.showLanguage ? parseInt(element.dataset.showLanguage, 10) : 0;
     this.#showLanguageCode = element.dataset.showLanguageCode ? parseInt(element.dataset.showLanguageCode, 10) : 0;
+    this.#showBibleLink = element.dataset.showBibleLink ? parseInt(element.dataset.showBibleLink, 10) : 0;
+    this.#bibleUrl = element.dataset.bibleUrl ? element.dataset.bibleUrl : 'https://getBible.net/';
 
     if (this.#showLocalReference){
       this.#showReference = 0;
     }
+    if (this.#bibleUrl !== 'https://getBible.net/'){
+      this.#showBibleLink = 1;
+    }
+  }
+
+  /**
+   * Retrieves the bible url.
+   *
+   * @returns {string} The bible url as strings.
+   */
+  get bibleUrl() {
+    return this.#bibleUrl;
+  }
+
+  /**
+   * Retrieves the show bible link flag.
+   *
+   * @returns {number} The show  bible link flag (0 or 1).
+   */
+  get bibleLink() {
+    return this.#showBibleLink;
   }
 
   /**

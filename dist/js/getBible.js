@@ -1,7 +1,7 @@
 /**
- * getBible Loader v3.0.3
+ * getBible Loader v3.1.0
  * https://getbible.net
- * (c) 2014 - 2023 Llewellyn van der Merwe
+ * (c) 2014 - 2024 Llewellyn van der Merwe
  * MIT License
  **/
 
@@ -191,6 +191,15 @@
     }
 
     /**
+     * Retrieves the url values.
+     *
+     * @returns {string} The chapter number.
+     */
+    get bibleUrl() {
+      return `${this.abbreviation}/${this.bookName}/${this.chapter}/${this.verseReference}`;
+    }
+
+    /**
      * Retrieves the translation name.
      *
      * @returns {string} The name of the translation.
@@ -322,13 +331,21 @@
     }
 
     /**
-     * Generates a reference string for the verses.
+     * Generates a reference string for the (book chapter:verses).
      *
      * @returns {string} The reference string.
      */
     get reference() {
+      return `${this.#data.name}:${this.verseReference}`;
+    }
+
+    /**
+     * Generates a reference string for the (verses).
+     *
+     * @returns {string} The reference verses string.
+     */
+    get verseReference() {
       const verseNumbers = this.#data.verses.map(verse => verse.verse).sort((a, b) => a - b);
-      let refString = `${this.#data.name}:`;
       let ranges = {};
       let rangeStart = null;
       let rangeEnd = null;
@@ -353,7 +370,7 @@
       }
 
       // Join the range strings with commas
-      return refString + Object.values(ranges).join(',');
+      return Object.values(ranges).join(',');
     }
   }
 
@@ -396,6 +413,8 @@
     #showAbbreviation;
     #showLanguage;
     #showLanguageCode;
+    #showBibleLink;
+    #bibleUrl;
 
     /**
      * Initializes the Actions object with a DOM element and its data attributes.
@@ -418,10 +437,33 @@
       this.#showAbbreviation = element.dataset.showAbbreviation ? parseInt(element.dataset.showAbbreviation, 10) : 0;
       this.#showLanguage = element.dataset.showLanguage ? parseInt(element.dataset.showLanguage, 10) : 0;
       this.#showLanguageCode = element.dataset.showLanguageCode ? parseInt(element.dataset.showLanguageCode, 10) : 0;
+      this.#showBibleLink = element.dataset.showBibleLink ? parseInt(element.dataset.showBibleLink, 10) : 0;
+      this.#bibleUrl = element.dataset.bibleUrl ? element.dataset.bibleUrl : 'https://getBible.net/';
 
       if (this.#showLocalReference){
         this.#showReference = 0;
       }
+      if (this.#bibleUrl !== 'https://getBible.net/'){
+        this.#showBibleLink = 1;
+      }
+    }
+
+    /**
+     * Retrieves the bible url.
+     *
+     * @returns {string} The bible url as strings.
+     */
+    get bibleUrl() {
+      return this.#bibleUrl;
+    }
+
+    /**
+     * Retrieves the show bible link flag.
+     *
+     * @returns {number} The show  bible link flag (0 or 1).
+     */
+    get bibleLink() {
+      return this.#showBibleLink;
     }
 
     /**
@@ -546,6 +588,30 @@
     get(scripture) {
       throw new Error("The 'get' method must be implemented in BaseFormat subclass.");
     }
+
+    /**
+     * Get external link svg image.
+     *
+     * @param {string} title - The external link title.
+     *
+     * @returns {string} The external link svg image.
+     */
+    getExternalLinkImage(title) {
+      // just to be safe
+      title.replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+      <title>${title}</title>
+      <path
+        fill="#36c"
+        d="M6 1h5v5L8.86 3.85 4.7 8 4 7.3l4.15-4.16L6 1Z M2 3h2v1H2v6h6V8h1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"
+      />
+    </svg>`;
+    }
   }
 
   class BlockFormat extends BaseFormat {
@@ -588,6 +654,13 @@
         // Construct the header
         if (header.length > 0) {
           display.push(`<b class="getbible-header">${header.join(' - ')}</b>`);
+        }
+        // Add link to chapter
+        if (this.action.bibleLink) {
+          display.push(`&nbsp;<a class="getbible-link"
+            href="${this.action.bibleUrl}${reference.bibleUrl}"
+            target="_blank" style="text-decoration: unset;"
+            title="${reference.reference}">${this.getExternalLinkImage(reference.reference)}</a>`);
         }
         const verses = reference.verses
           .map(verse => `<div class="getbible-verse">${verse.verse}. ${verse.text}</div>`)
@@ -644,6 +717,13 @@
         // Construct the footer
         if (footer.length > 0) {
           display.push(`<b class="getbible-footer">${footer.join(' - ')}</b>`);
+        }
+        // Add link to chapter
+        if (this.action.bibleLink) {
+          display.push(`<a class="getbible-link"
+            href="${this.action.bibleUrl}${reference.bibleUrl}"
+            target="_blank" style="text-decoration: unset;"
+            title="${reference.reference}">${this.getExternalLinkImage(reference.reference)}</a>`);
         }
         display.push(`</div>`);
       });
@@ -1147,7 +1227,7 @@
         super.load(content);
         this.element.classList.add('has-tip');
 
-        new Foundation.Tooltip(this.getElement(), {
+        new Foundation.Tooltip(this.element, {
           // Default options
           disableHover: false, // Allows tooltip to be hoverable
           fadeOutDuration: 150, // Duration of fade out animation in milliseconds

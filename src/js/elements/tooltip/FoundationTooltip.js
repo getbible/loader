@@ -11,7 +11,7 @@ export class FoundationTooltip extends BaseTooltip {
       super.load(content);
       this.element.classList.add('has-tip');
 
-      new Foundation.Tooltip(this.getElement(), {
+      new Foundation.Tooltip(this.element, {
         // Default options
         disableHover: false, // Allows tooltip to be hoverable
         fadeOutDuration: 150, // Duration of fade out animation in milliseconds

@@ -44,6 +44,15 @@ export class Reference {
   }
 
   /**
+   * Retrieves the url values.
+   *
+   * @returns {string} The chapter number.
+   */
+  get bibleUrl() {
+    return `${this.abbreviation}/${this.bookName}/${this.chapter}/${this.verseReference}`;
+  }
+
+  /**
    * Retrieves the translation name.
    *
    * @returns {string} The name of the translation.
@@ -175,13 +184,21 @@ export class Reference {
   }
 
   /**
-   * Generates a reference string for the verses.
+   * Generates a reference string for the (book chapter:verses).
    *
    * @returns {string} The reference string.
    */
   get reference() {
+    return `${this.#data.name}:${this.verseReference}`;
+  }
+
+  /**
+   * Generates a reference string for the (verses).
+   *
+   * @returns {string} The reference verses string.
+   */
+  get verseReference() {
     const verseNumbers = this.#data.verses.map(verse => verse.verse).sort((a, b) => a - b);
-    let refString = `${this.#data.name}:`;
     let ranges = {};
     let rangeStart = null;
     let rangeEnd = null;
@@ -206,6 +223,6 @@ export class Reference {
     }
 
     // Join the range strings with commas
-    return refString + Object.values(ranges).join(',');
+    return Object.values(ranges).join(',');
   }
 }

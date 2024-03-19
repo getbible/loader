@@ -42,6 +42,13 @@ export class BlockFormat extends BaseFormat {
       if (header.length > 0) {
         display.push(`<b class="getbible-header">${header.join(' - ')}</b>`);
       }
+      // Add link to chapter
+      if (this.action.bibleLink) {
+        display.push(`&nbsp;<a class="getbible-link"
+            href="${this.action.bibleUrl}${reference.bibleUrl}"
+            target="_blank" style="text-decoration: unset;"
+            title="${reference.reference}">${this.getExternalLinkImage(reference.reference)}</a>`);
+      }
       const verses = reference.verses
         .map(verse => `<div class="getbible-verse">${verse.verse}. ${verse.text}</div>`)
         .join("\n");
